@@ -11,7 +11,7 @@ import (
 	"url-shortener-alt/internal/config"
 	"url-shortener-alt/internal/url"
 	"url-shortener-alt/internal/url/db"
-	"url-shortener-alt/pkg/client/postgresql"
+	"url-shortener-alt/pkg/client/redis"
 )
 
 func main() {
@@ -20,11 +20,13 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	client, err := postgresql.NewClient(context.TODO(), 3, cfg.Storage)
+	newClient, err := redis.NewClient(context.TODO(), cfg.Storage)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	repository := db.NewRepository(client)
+	defer newClient.Close()
+
+	repository := db.NewRepository(newClient)
 	handler := url.NewHandler(repository)
 	handler.Register(router)
 

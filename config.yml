@@ -5,8 +5,6 @@ listen:
   bind_ip: 0.0.0.0
   port: 8080
 storage:
-  host:
-  port: 5432
-  database:
-  username:
-  password:
+  host: 127.0.0.1
+  port: 6379
+  database: 0
