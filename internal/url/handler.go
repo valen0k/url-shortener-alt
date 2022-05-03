@@ -33,8 +33,7 @@ func (h *handler) EncodeLink(writer http.ResponseWriter, request *http.Request) 
 		_, err := h.repository.Create(context.TODO(), originalUrl, hash, 0)
 		if err != nil {
 			log.Println(err)
-			writer.WriteHeader(http.StatusBadRequest)
-			writer.Header().Add("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
@@ -50,8 +49,7 @@ func (h *handler) DecodeLink(writer http.ResponseWriter, request *http.Request) 
 	url, err := h.repository.FindByHash(context.TODO(), hashUrl)
 	if err != nil {
 		log.Println(err)
-		writer.WriteHeader(http.StatusBadRequest)
-		writer.Header().Add("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusNotFound)
 		return
 	}
 	http.Redirect(writer, request, url, http.StatusFound)
